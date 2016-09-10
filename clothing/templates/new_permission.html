@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css')}}">
+</head>
+<body>
+
+<h1>Create permission</h1>
+<form action="{{ url_for('create_permission', userid=userid) }}" method='post'>
+    <input type="text" name="permission name" placeholder="Permission">
+    <input type="text" name="permission rule" placeholder="Rule">
+    <input type="submit" value="Create">
+</form>
+
+</body>
+
+</html>

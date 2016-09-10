@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css')}}">
+</head>
+<body>
+
+<h1>{{user.username}} Permissions</h1>
+<table border="1">
+{% for permission in user.permissions %}
+    <tr><td>{{permission.name}}</td><td>{{permission.rule}}</td>
+{% endfor %}
+</table>
+<a href="{{ url_for('create_permission', userid=user.userid)}} ">Create permission</a>
+
+</body>
+
+</html>
