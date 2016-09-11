@@ -25,7 +25,9 @@
             local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
             return local.toJSON().slice(0,10);
         });
-        document.getElementById('datePicker').valueAsDate = new Date();
+        document.getElementById('datePicker').valueAsDate = new Date().toDateInputValue();
+        document.getElementById('datePicker').value = document.getElementById('datePicker').valueAsDate;
+        // document.getElementById('datePicker').valueAsDate = new Date(); quit working
         $( "#datePicker" ).datepicker({ dateFormat: 'yy-mm-dd'});
     });
 </script>
