@@ -1,19 +1,11 @@
-import os, sys
-from sqlalchemy import Table, Column, ForeignKey
+from sqlalchemy import Column, ForeignKey
 from sqlalchemy import Integer, String, Date
-from sqlalchemy.dialects.mysql import TINYINT, TINYTEXT, INTEGER
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 
 
 Base = declarative_base()
-# Base.__table_args__ = {'mysql_engine': 'MyISAM'}
 
-""" user_permissions = Table('user_permissions', Base.metadata,
-                         #Column('id', Integer, primary_key=True),
-                         Column('userid', TINYINT(1), ForeignKey('users.userid')),
-                         Column('permissionid', INTEGER, ForeignKey('permissions.id')))
-"""
 class Garment(Base):
     __tablename__ = 'garment'
     garment_id = Column(Integer, primary_key=True)
@@ -53,7 +45,6 @@ class MatchRating(Base):
     __tablename__ = 'match_rating'
     garment_id = Column(Integer, ForeignKey('garment.garment_id'), nullable=False, primary_key=True)
     matched_garment_id = Column(Integer, ForeignKey('garment.garment_id'), nullable=False)
-
     match_rating = Column(Integer, default=None)
     garment = relationship("Garment", foreign_keys=[garment_id], backref="matched")
     matched_garment = relationship("Garment", foreign_keys=[matched_garment_id], backref='matched_to')
