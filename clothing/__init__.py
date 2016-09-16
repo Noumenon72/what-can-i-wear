@@ -22,14 +22,21 @@ from flask import render_template, abort, request, redirect
 
 @app.route('/')
 def show_entry_page():
-    return render_template("index.html")
+    session = Session()
+    garments = session.query(Garment).all()
+    session.commit()
+    for garment in garments:
+        garment.wears_since_last_wash = \
+            len([event for event in garment.events if
+                 event.event_date > garment.last_washed and event.event_type == 'wear'])
+        garment.wears_left_till_wash = garment.wears_between_washes - garment.wears_since_last_wash
+    return render_template("index.html", garments=garments)
 
 @app.route('/garments/')
 def list_garments():
     session = Session()
     garments = session.query(Garment).all()
     session.commit()
-    #return render_template('permissions.html', user=author)
     return "<html>*{}*: {}<BR> {}".format(len(garments), "hi", "I hate sissy")
 
 @app.route('/events/')
@@ -41,10 +48,41 @@ def list_events():
     session.commit()
     return render_template('events.html', events=events)
 
+@app.route('/events/history')
+def list_history():
+    get = request.args.get('event_type')
+    session = Session()
+    events = session.query(Event).filter_by(event_type=get).all()
+    session.commit()
+    return render_template('events_history.html', event_type=get, events=events)
+
+
+@app.route('/events/new', methods=['POST'])
+def add_event():
+    session = Session()
+    event_date = datetime.datetime.strptime(request.form['event_date'], '%Y-%m-%d')
+    if request.form.get('event_type') == 'wear':
+        for garment_id in request.form.getlist('garment_id'):
+            event = Event()
+            event.garment_id = garment_id
+            event.event_type = request.form['event_type']
+            event.event_date = event_date
+            session.query(Garment).filter(Garment.garment_id==garment_id)\
+                .update({"last_worn": event_date}, synchronize_session='fetch')
+            session.add(event)
+    elif request.form.get('event_type') == 'wash':
+        session.query(Garment).filter(Garment.garment_id.in_(request.form.getlist('garment_id')))\
+            .update({"last_washed": event_date}, synchronize_session='fetch')
+
+    session.commit()
+    return redirect('/')
+
+
 @app.route('/garments/<int:garment_id>/events/', methods=['GET'])
 def list_events_for_garment(garment_id):
     session = Session()
-    wears, garments = list()
+    wears = list()
+    garments = list()
     res = session.query(Event, Garment)\
         .filter(Event.garment_id == Garment.garment_id)\
         .filter_by(garment_id=garment_id).all()
@@ -54,13 +92,17 @@ def list_events_for_garment(garment_id):
         abort(404)
     return render_template('wears.html', garment_id=garment_id, garment_name=garments[0].name, events=wears)
 
-@app.route('/events/new', methods=['POST'])
-def add_event():
-    session = Session()
-    event = Event()
-    event.garment_id = request.form['garment_id']
-    event.event_type = request.form['event_type']
-    event.event_date = datetime.datetime.strptime(request.form['event_date'], '%Y-%m-%d')
-    session.add(event)
+
+@app.route('/recommendations')
+def list_recommendations():
+    priorities = request.args.getlist('priorities[]')
+    session=Session()
+    garments = session.query(Garment).outerjoin(Event)\
+        .order_by(Garment.last_washed.desc(), Garment.type.desc())\
+        .all()
+    for garment in garments:
+        garment.wears_since_last_wash = \
+            len([event for event in garment.events if event.event_date > garment.last_washed and event.event_type == 'wear'])
+        garment.wears_left_till_wash = garment.wears_between_washes - garment.wears_since_last_wash
     session.commit()
-    return redirect('/events/')
+    return render_template("recommendations.html", garments = garments)

@@ -7,7 +7,7 @@
 
 <h1>Events</h1>
 <table><tr><th>event_id</th><th>garment name</th><th>garment_id</th><th>event_date</th><th>event_type</th></tr>
-{% for event in events %}
+{% for event in events|sort(reverse=True, attribute='event_date') %}
 <tr>
     <td>{{ event.event_id }}</td>
     <td>{{ event.garment.name }}</td>
@@ -17,8 +17,6 @@
 </tr>
 {% endfor %}
 </table>
-<hr>
-<p>{{EVENTS}}</p>
 </body>
 
 </html>

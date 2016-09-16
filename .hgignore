@@ -3,3 +3,4 @@ syntax: glob
 *.pyc
 *.sqbpro
 *.db
+clothing/static/clothing wardrobe.bak

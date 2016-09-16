@@ -11,6 +11,7 @@ class Garment(Base):
     garment_id = Column(Integer, primary_key=True)
     name = Column(String(30))
     last_washed = Column(Date)
+    last_worn = Column(Date)
     type = Column(String(30))
     color = Column(String(30))
     texture = Column(String(30))
@@ -37,7 +38,7 @@ class Event(Base):
     __tablename__ = 'event'
     event_id = Column(Integer, primary_key=True)
     garment_id = Column(Integer, ForeignKey('garment.garment_id'))
-    garment = relationship("Garment", backref=backref('event', order_by=event_id))
+    garment = relationship("Garment", backref=backref('events', order_by=event_id))
     event_date = Column(Date)
     event_type = Column(String(30))
 

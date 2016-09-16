@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css')}}">
+</head>
+<body>
+
+<h1>{{ event_type|capitalize }} History</h1>
+<table>
+{% for group in events|groupby('event_date')|sort(reverse=True) %}
+    <tr class="group"><td class="group">{{group.grouper}}</td></tr>
+    {% for event in group.list|sort(reverse=True, attribute='garment.type')  %}
+        <tr>
+            <td>{{ event.garment.name }}</td>
+        </tr>
+    {% endfor %}
+    <tr class="spacer"><td></td></tr>
+{% endfor %}
+</table>
+<hr>
+</body>
+
+</html>

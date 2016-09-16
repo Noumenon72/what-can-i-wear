@@ -8,20 +8,27 @@
 </head>
 <body>
 
-<h1>Clothing</h1>
-<form action="events/new" method="post">
-    <select name="garment_id" size="{{ garments|length + 3}}" autofocus multiple required>
-        {% for group in garments|groupby('type') %}
-            <optgroup label="{{ group.grouper }}">
+<h1>Recommendations</h1>
+<table>
+{% for group in garments|groupby('type') %}
+    <tr class="group"><td class="group">{{group.grouper}}</td></tr>
                 {% for garment in group.list|sort(attribute="last_worn") %}
-                    <option value="{{ garment.garment_id }}" class="washes-left-{{ garment.wears_left_till_wash }}">
-                        {{garment.name|capitalize}}
-                    </option>
+    <TR>
+        <TD class="washes-left-{{ garment.wears_left_till_wash }}">{{garment.name}}</TD>
+        <TD>{{ garment.type }}</TD>
+        <td>{{ garment.last_washed }}</td>
+        <TD>{{ garment.wears_since_last_wash }}</TD>
+        <TD class="washes-left-{{ garment.wears_left_till_wash }}">{{ garment.wears_left_till_wash }}</TD>
+    </TR>
                 {% endfor %}
-            </optgroup>
-        {% endfor %}
-    </select>
-    <input type="date" name="event_date" id="datePicker">
+    <tr></tr>
+        <tr class="spacer"><td></td></tr>
+
+{% endfor %}
+</table>
+
+
+<input type="date" name="event_date" id="datePicker">
     <select name="event_type">
         <option value="wear">wear</option>
         <option value="wash">wash</option>
@@ -30,7 +37,6 @@
     <a href="{{ url_for('list_events') }}">Events list</a>
     <a href="{{ url_for('list_history', event_type='wear') }}">Wear history</a>
     <a href="{{ url_for('list_recommendations', priorities=['name', 'type']) }}">Recommendations</a>
-</form>
 <script>
     $(document).ready( function() {
         Date.prototype.toDateInputValue = (function() {
