@@ -2,7 +2,7 @@ import datetime
 
 from flask import Flask
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, state
 
 from models import Base
 
@@ -76,6 +76,21 @@ def add_event():
 
     session.commit()
     return redirect('/')
+
+
+@app.route('/garments/<int:garment_id>/', methods=['GET'])
+def dump_garment(garment_id):
+    session = Session()
+    wears = list()
+    res = session.query(Garment)\
+        .filter_by(garment_id=garment_id).one()
+    """if len(res):
+        (wears, garments) = list(zip(*res))
+    else:
+        abort(404)
+    return render_template('wears.html', garment_id=garment_id, garment_name=garments[0].name, events=wears)"""
+    return ", ".join([str(item) for item in res.__dict__.values() if item is not None and type(item) is not state.InstanceState])
+
 
 
 @app.route('/garments/<int:garment_id>/events/', methods=['GET'])

@@ -37,7 +37,7 @@
     <a href="{{ url_for('list_events') }}">Events list</a>
     <a href="{{ url_for('list_history', event_type='wear') }}">Wear history</a>
     <a href="{{ url_for('list_recommendations', priorities=['name', 'type']) }}">Recommendations</a>
-<script>
+    <script>
     $(document).ready( function() {
         Date.prototype.toDateInputValue = (function() {
             var local = new Date(this);
