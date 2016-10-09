@@ -5,32 +5,47 @@
     <link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js" type="text/javascript"></script>
     <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+    <script>
+    populate_garments = function() {
+       geturl = "{{ url_for('garments_dropdown') }}?short_sleeves=" + $("#js-filter_short_sleeves")[0].checked;
+       $.ajax(geturl).done(function (reply) {
+          $('#garmentSelectContainer').html(reply);
+        });
+    }
+
+    $(document).ready( function() {
+        $('#js-filter_short_sleeves').click(populate_garments);
+        populate_garments();
+    });
+</script>
 </head>
 <body>
 
 <h1>Clothing</h1>
 <form action="events/new" method="post">
-    <select name="garment_id" size="{{ garments|length + 3}}" autofocus multiple required>
-        {% for group in garments|groupby('type') %}
-            <optgroup label="{{ group.grouper }}">
-                {% for garment in group.list|sort(attribute="last_worn") %}
-                    <option value="{{ garment.garment_id }}" class="washes-left-{{ garment.wears_left_till_wash }}">
-                        {{garment.name|capitalize}}
-                    </option>
-                {% endfor %}
-            </optgroup>
-        {% endfor %}
-    </select>
-    <input type="date" name="event_date" id="datePicker">
-    <select name="event_type">
-        <option value="wear">wear</option>
-        <option value="wash">wash</option>
-    </select>
-    <input type="submit" value="Create Event">
+    <div id="garmentSelectContainer">
+        {% include "garments_dropdown.html" with context %}
+    </div>
+    <div class="form-controls">
+        <input type="date" name="event_date" id="datePicker">
+        <select name="event_type">
+            <option value="wear">wear</option>
+            <option value="wash">wash</option>
+        </select>
+        <input type="submit" value="Create Event">
+        <BR>
+        <label>Show short sleeves <input type="checkbox" name="filter_short_sleeves" id="js-filter_short_sleeves"></label>
+        <BR>
+        <div id="notesContainer">
+
+        </div>
+    </div>
+</form>
+<div class="extra-links-container">
     <a href="{{ url_for('list_events') }}">Events list</a>
     <a href="{{ url_for('list_history', event_type='wear') }}">Wear history</a>
     <a href="{{ url_for('list_recommendations', priorities=['name', 'type']) }}">Recommendations</a>
-</form>
+</div>
 <script>
     $(document).ready( function() {
         Date.prototype.toDateInputValue = (function() {
@@ -42,8 +57,12 @@
         document.getElementById('datePicker').value = document.getElementById('datePicker').valueAsDate;
         // document.getElementById('datePicker').valueAsDate = new Date(); quit working
         $( "#datePicker" ).datepicker({ dateFormat: 'yy-mm-dd'});
+        $( "#js-filter_short_sleeves").click( function() {
+            $(this).toggleClass('whatever');
+
+        });
     });
-    
+
 </script>
 </body>
 </html>

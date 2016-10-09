@@ -1,0 +1,11 @@
+    <select name="garment_id" size="{{ garments|length + 3}}" autofocus multiple required>
+        {% for group in garments|groupby('type') %}
+            <optgroup label="{{ group.grouper }}">
+                {% for garment in group.list|sort(attribute="last_worn") %}
+                   <option value="{{ garment.garment_id }}" class="washes-left-{{ garment.wears_left_till_wash }}">
+                        {{garment.name|capitalize}}
+                    </option>
+                {% endfor %}
+            </optgroup>
+        {% endfor %}
+    </select>

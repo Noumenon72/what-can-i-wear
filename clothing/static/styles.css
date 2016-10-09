@@ -26,3 +26,20 @@ tr.spacer {
 .washes-left-1 {
     color: chocolate
 }
+
+form {
+    display: inline-flex
+}
+
+.form-controls {
+    display: inline-block
+}
+
+.extra-links-container {
+    padding: 50px;
+    display: inline-block
+}
+
+#garmentSelectContainer {
+    display: inline
+}

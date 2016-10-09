@@ -13,6 +13,7 @@ class Garment(Base):
     last_washed = Column(Date)
     last_worn = Column(Date)
     type = Column(String(30))
+    style = Column(String(30))
     color = Column(String(30))
     texture = Column(String(30))
     seasonality = Column(String(30))
