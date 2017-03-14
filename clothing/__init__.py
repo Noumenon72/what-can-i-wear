@@ -41,6 +41,16 @@ def garments_dropdown():
     return render_template("garments_dropdown.html", garments=garments)
 
 
+@app.route('/garment_notes_container')
+def garment_notes_container():
+    id = request.args.get("garment_id")
+    if id:
+        session = Session()
+        garment = session.query(Garment).filter_by(garment_id=id).one()
+        if garment is not None:
+            return render_template('garment_notes_container.html', garment=garment)
+    return "<i>garment {} not found</i>".format(id)
+
 @app.route('/garments/')
 def list_garments():
     session = Session()

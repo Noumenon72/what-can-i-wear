@@ -32,7 +32,8 @@ form {
 }
 
 .form-controls {
-    display: inline-block
+    display: inline-block;
+    padding-left: 8px
 }
 
 .extra-links-container {

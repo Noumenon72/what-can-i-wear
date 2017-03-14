@@ -1,4 +1,4 @@
-    <select name="garment_id" size="{{ garments|length + 3}}" autofocus multiple required>
+    <select name="garment_id" id="garmentsDropdown" size="{{ garments|length + 3}}" autofocus multiple required>
         {% for group in garments|groupby('type') %}
             <optgroup label="{{ group.grouper }}">
                 {% for garment in group.list|sort(attribute="last_worn") %}

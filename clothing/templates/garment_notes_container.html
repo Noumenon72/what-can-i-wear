@@ -1,0 +1,8 @@
+{% if garment.comment %}
+    <p>
+    {% for line in garment.comment.splitlines() %}
+        {{ line }}<BR>
+    {% endfor %}
+    </p>
+{% endif %}
+<p>{{ 'Formality rating: %s' % garment.formality_rating if garment.formality_rating}} </p>
